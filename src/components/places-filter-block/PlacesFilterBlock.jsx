@@ -1,72 +1,10 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
+import PropTypes from 'prop-types';
 
 import styles from './styles.module.css';
 
-const items = [
-  {
-    id: 0,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 1,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 2,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 3,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 4,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 5,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 6,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 7,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 8,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 9,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 10,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  },
-  {
-    id: 11,
-    img: 'https://tripfer.com/uploads/24178af4800e445c925f813cb3424046.jpg',
-    title: 'Кахетия'
-  }
-];
-
-const PlacesFilterBlock = () => {
+const PlacesFilterBlock = ({ title, moreText, cancelText, items }) => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showMorePlaces, setShowMorePlaces] = useState(5);
 
@@ -82,9 +20,7 @@ const PlacesFilterBlock = () => {
 
   return (
     <div className={styles.placesFilterBlock__section}>
-      <h2 className={styles.placesFilterBlock__title}>
-        Популярные направления
-      </h2>
+      <h2 className={styles.placesFilterBlock__title}>{title}</h2>
       <div className={styles.placesFilterBlock__items}>
         {items.slice(0, showMorePlaces + 1).map(item => (
           <div
@@ -100,20 +36,33 @@ const PlacesFilterBlock = () => {
             onClick={() => handleClickPlace(item.id)}
           >
             <div className={styles.placesFilterBlock__item_more}>
-              <span>Еще</span>
+              <span>{moreText}</span>
             </div>
             <div className={styles.placesFilterBlock__item_cancel}>
-              Отменить
+              {cancelText}
             </div>
             <img src={item.img} alt="img" />
             <div className={styles.placesFilterBlock__item_place}>
-              <span>Кахетия</span>
+              <span>{item.title}</span>
             </div>
           </div>
         ))}
       </div>
     </div>
   );
+};
+
+PlacesFilterBlock.propTypes = {
+  title: PropTypes.string.isRequired,
+  moreText: PropTypes.string.isRequired,
+  cancelText: PropTypes.string.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      img: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired
+    })
+  ).isRequired
 };
 
 export default PlacesFilterBlock;

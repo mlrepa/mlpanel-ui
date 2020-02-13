@@ -1,10 +1,13 @@
 .sortPanelBlock__div {
+  height: 50px;
   display: flex;
   align-items: center;
   margin: 0 10px;
 }
 
 .sortPanelBlock__title {
+  color: #304269;
+  font-weight: 600;
   font-size: 14px;
 }
 
@@ -32,9 +35,9 @@
   width: 15px;
   height: 40px;
   margin-left: 2px;
-  background-size: contain !important;
-  background-position: center center !important;
-  border-bottom: none !important;
+  background-size: contain;
+  background-position: center center;
+  border-bottom: none;
 }
 
 .sortPanelBlock__item_active {

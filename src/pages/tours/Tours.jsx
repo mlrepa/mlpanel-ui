@@ -1,9 +1,19 @@
 import React from 'react';
 
+// Components
 import CountryInfoBlock from 'components/country-info-block';
 import PlacesFilterBlock from 'components/places-filter-block';
 import TourSearchBlock from 'components/tour-search-block';
 import SortPanelBlock from 'components/sort-panel-block';
+import FilterPanelBlock from 'components/filter-panel-block';
+
+// Mocks
+import {
+  mockPlaces,
+  properties,
+  departurePointsMock,
+  tripDaysMock
+} from './mocks';
 
 import styles from './styles.module.css';
 
@@ -22,9 +32,24 @@ const Tours = () => (
       />
     </div>
     <div className={styles.tours__mainBlock}>
-      <PlacesFilterBlock />
-      <TourSearchBlock />
-      <SortPanelBlock />
+      <PlacesFilterBlock
+        items={mockPlaces}
+        title="Популярные направления"
+        cancelText="Отмена"
+        moreText="Еще"
+      />
+      <TourSearchBlock
+        departurePoints={departurePointsMock}
+        days={tripDaysMock}
+        title="Подобрать тур"
+        daysAmountPlaceholder="Количество дней"
+        departurePlacePlaceholder="Место отправления"
+        findButtonText="Найти"
+      />
+      <div className={styles.tours__mainBlock_bottomPanel}>
+        <SortPanelBlock properties={properties} title="Сортировать по:" />
+        <FilterPanelBlock />
+      </div>
     </div>
   </div>
 );
