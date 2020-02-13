@@ -1,3 +1,10 @@
 .tours__topBlock {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+
+.tours__mainBlock {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+}

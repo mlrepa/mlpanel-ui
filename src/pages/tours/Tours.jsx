@@ -2,6 +2,8 @@ import React from 'react';
 
 import CountryInfoBlock from 'components/country-info-block';
 import PlacesFilterBlock from 'components/places-filter-block';
+import TourSearchBlock from 'components/tour-search-block';
+import SortPanelBlock from 'components/sort-panel-block';
 
 import styles from './styles.module.css';
 
@@ -19,7 +21,11 @@ const Tours = () => (
         description="Туры в Грузию пользуются большой популярностью среди путешественников."
       />
     </div>
-    <PlacesFilterBlock />
+    <div className={styles.tours__mainBlock}>
+      <PlacesFilterBlock />
+      <TourSearchBlock />
+      <SortPanelBlock />
+    </div>
   </div>
 );
 
