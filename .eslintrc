@@ -12,6 +12,16 @@
     "no-undef": 0,
     "arrow-parens": 0,
     "implicit-arrow-linebreak": 0,
-    "comma-dangle": 0
+    "comma-dangle": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "operator-linebreak": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    }
   }
 }

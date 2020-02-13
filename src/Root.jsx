@@ -5,6 +5,8 @@ import { ConnectedRouter } from 'connected-react-router';
 import { CookiesProvider } from 'react-cookie';
 
 import history from './history';
+import routes from './routes';
+
 import configureStore from './configureStore';
 
 const store = configureStore({});
@@ -15,8 +17,14 @@ const Root = () => (
       <ConnectedRouter history={history}>
         <>
           <Switch>
-            <Route exact path="/" render={() => <div>Match</div>} />
-            <Route render={() => <div>Miss</div>} />
+            {routes.map(item => (
+              <Route
+                key={item.id}
+                exact={item.exact}
+                path={item.path}
+                component={item.component}
+              />
+            ))}
           </Switch>
         </>
       </ConnectedRouter>
