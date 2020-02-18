@@ -4,17 +4,18 @@ import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import history from './history';
-import createRootReducer from './reducers';
+import createRootReducer from 'reducers';
+import rootSaga from 'sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const configureStore = preloadedState =>
-  createStore(
-    createRootReducer(history),
-    preloadedState,
-    composeWithDevTools(
-      applyMiddleware(routerMiddleware(history), sagaMiddleware)
-    )
-  );
+const configureStore = createStore(
+  createRootReducer(history),
+  composeWithDevTools(
+    applyMiddleware(routerMiddleware(history), sagaMiddleware)
+  )
+);
+
+sagaMiddleware.run(rootSaga);
 
 export default configureStore;
