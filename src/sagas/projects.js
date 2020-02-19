@@ -23,7 +23,8 @@ import {
   terminateProjectSuccess,
   deleteProjectSuccess,
   restoreProjectSuccess,
-  createProjectSuccess
+  createProjectSuccess,
+  fetchProjectsRequest
 } from 'actions/projects';
 
 import { setIsLoading, setIsError } from 'actions/global';
@@ -92,6 +93,7 @@ function* deleteProjectSaga({ payload }) {
     yield put(push('/'));
     toastr.success(`Project ${payload} deleted!`);
     yield put(setIsLoading(false));
+    yield put(fetchProjectsRequest());
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));
@@ -107,6 +109,7 @@ function* runProjectSaga({ payload }) {
     yield put(runProjectSuccess(resp));
     toastr.success(`Project ${payload} ran!`);
     yield put(setIsLoading(false));
+    yield put(fetchProjectsRequest());
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));
@@ -122,6 +125,7 @@ function* archiveProjectSaga({ payload }) {
     yield put(archiveProjectSuccess(resp));
     toastr.success(`Project ${payload} archived!`);
     yield put(setIsLoading(false));
+    yield put(fetchProjectsRequest());
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));
@@ -137,6 +141,7 @@ function* terminateProjectSaga({ payload }) {
     yield put(terminateProjectSuccess(resp));
     toastr.success(`Project ${payload} terminated!`);
     yield put(setIsLoading(false));
+    yield put(fetchProjectsRequest());
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));
@@ -152,6 +157,7 @@ function* restoreProjectSaga({ payload }) {
     yield put(restoreProjectSuccess(resp));
     toastr.success(`Project ${payload} restored!`);
     yield put(setIsLoading(false));
+    yield put(fetchProjectsRequest());
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));

@@ -28,7 +28,7 @@ import createTableField from 'utils/createTableField';
 
 import useRunStyles from './useRunStyles';
 
-const metricsTableFields = [
+const metricsTableFields = () => [
   createTableField(0, 'key', 'Key'),
   createTableField(1, 'value', 'Value'),
   createTableField(2, 'timestamp', 'Timestamp', value =>
@@ -37,12 +37,12 @@ const metricsTableFields = [
   createTableField(3, 'step', 'Step')
 ];
 
-const paramsTableFields = [
+const paramsTableFields = () => [
   createTableField(0, 'key', 'Key'),
   createTableField(1, 'value', 'Value')
 ];
 
-const tagsTableFields = [
+const tagsTableFields = () => [
   createTableField(0, 'key', 'Key'),
   createTableField(1, 'value', 'Value')
 ];

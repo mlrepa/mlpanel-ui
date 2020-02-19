@@ -7,13 +7,15 @@ import {
   CircularProgress,
   Chip,
   Button,
-  Paper
+  Paper,
+  Typography
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import Iframe from 'react-iframe';
 import Alert from '@material-ui/lab/Alert';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { push } from 'connected-react-router';
 
 import {
   fetchProjectRequest,
@@ -24,6 +26,7 @@ import {
   terminateProjectRequest,
   archiveProjectRequest
 } from 'actions/projects';
+import { setCurrentProject } from 'actions/global';
 import { projectsStatuses } from 'constants/enums';
 
 import useProjectStyles from './useProjectStyles';
@@ -32,7 +35,7 @@ const Project = ({
   match: {
     params: { projectId }
   },
-  data: { name, description, status, mlflowUri, createdBy, createdAt },
+  data: { id, name, description, status, mlflowUri, createdBy, createdAt },
   data,
   isLoading,
   isError
@@ -72,6 +75,11 @@ const Project = ({
       </Alert>
     );
   }
+
+  const setProject = async (id, path) => {
+    await dispatch(setCurrentProject(id));
+    await dispatch(push(`/${path}`));
+  };
 
   return (
     <Paper className={classes.paper}>
@@ -140,12 +148,65 @@ const Project = ({
                 Archive
               </Button>
             </div>
+            <div className={classes.topBlock}>
+              <Button
+                className={classes.button}
+                disabled={status !== 'running'}
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={() => setProject(id, 'experiments')}
+              >
+                Experiments
+              </Button>
+              <Button
+                className={classes.button}
+                disabled={status !== 'running'}
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={() => setProject(id, 'models')}
+              >
+                Models
+              </Button>
+              <Button
+                className={classes.button}
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={() => dispatch(push('/deployments'))}
+              >
+                Deployments
+              </Button>
+            </div>
             <div className={classes.chip}>
+              <Typography variant="h6">STATUS: </Typography>
               <Chip
                 label={status}
                 color={
                   projectsStatuses.find(item => item.value === status).color
                 }
+              />
+            </div>
+            <div className={classes.item}>
+              <Typography color="textSecondary">ID: {id}</Typography>
+            </div>
+            <div className={classes.item}>
+              <Typography color="textSecondary">
+                Created By: {createdBy}
+              </Typography>
+            </div>
+            <div className={classes.item}>
+              <Typography color="textSecondary">
+                Mlflow Tracking Server: {mlflowUri}
+              </Typography>
+            </div>
+            <div>
+              <DatePicker
+                label="Created At"
+                value={createdAt}
+                disabled
+                animateYearScrolling
               />
             </div>
             <div>
@@ -166,22 +227,6 @@ const Project = ({
                 rows="4"
                 onChange={props.handleChange}
                 value={props.values.description}
-              />
-            </div>
-            <div>
-              <TextField
-                label="Created By"
-                disabled
-                variant="outlined"
-                value={createdBy}
-              />
-            </div>
-            <div>
-              <DatePicker
-                label="Created At"
-                value={createdAt}
-                disabled
-                animateYearScrolling
               />
             </div>
             <Iframe

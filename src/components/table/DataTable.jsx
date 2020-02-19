@@ -12,8 +12,6 @@ import {
   Table
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 import { withRouter } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
@@ -27,14 +25,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DataTable = ({
-  match,
   tableFields,
   fetchRequest,
   data,
   isLoading,
   isError,
-  push,
-  isRowClickable,
   additionalRequestProp,
   secondAdditionalRequestProp,
   twoProps,
@@ -61,12 +56,6 @@ const DataTable = ({
   useEffect(() => {
     setOpen(isLoading);
   }, [isLoading]);
-
-  const handleRowClick = id => {
-    if (isRowClickable) {
-      push(`${match.path === '/' ? '/' : match.path + '/'}${id}`);
-    }
-  };
 
   if (isLoading) {
     return (
@@ -97,26 +86,24 @@ const DataTable = ({
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            {tableFields.map(item => (
+            {tableFields().map(item => (
               <TableCell key={item.id}>{item.title}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map(row => (
+          {data && data.map(row => (
             <TableRow
-              hover={isRowClickable}
               key={row.id || row.key}
-              onClick={() => handleRowClick(row.id)}
             >
-              {tableFields.map(field => {
+              {tableFields().map(field => {
                 const rowItem = innerLevel
                   ? row[innerLevel][field.name]
                   : row[field.name];
 
                 return (
                   <TableCell key={field.id}>
-                    {field.format ? field.format(rowItem) : rowItem}
+                    {field.format ? field.format(rowItem, row) : rowItem}
                   </TableCell>
                 );
               })}
@@ -128,4 +115,4 @@ const DataTable = ({
   );
 };
 
-export default withRouter(connect(null, { push })(DataTable));
+export default withRouter(DataTable);

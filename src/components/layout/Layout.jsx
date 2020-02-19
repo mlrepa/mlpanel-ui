@@ -43,7 +43,6 @@ import CustomizedSelect from '../customized-select';
 import useLayoutStyles from './useLayoutStyles';
 import { fetchRunRequest, fetchRunsRequest } from '../../actions/runs';
 import { fetchModelRequest, fetchModelsRequest } from '../../actions/models';
-import { fetchModel } from '../../api/models';
 
 const Layout = ({
   children,
@@ -139,7 +138,6 @@ const Layout = ({
   const handleGoBack = () => history.goBack();
 
   const handleListItemClick = (event, index) => {
-    handleDrawerClose();
     push(routes.find(item => item.id === index).path);
   };
 

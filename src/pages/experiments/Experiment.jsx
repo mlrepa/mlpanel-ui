@@ -7,18 +7,36 @@ import {
   CircularProgress,
   Chip,
   Button,
-  Paper
-} from '@material-ui/core';
+  Paper, Typography
+} from "@material-ui/core";
 import { DatePicker } from '@material-ui/pickers';
 import Alert from '@material-ui/lab/Alert';
 import { push } from 'connected-react-router';
+import { format } from 'date-fns';
+
+import Table from 'components/table/DataTable';
 
 import {
   fetchExperimentRequest,
   deleteExperimentRequest
 } from 'actions/experiments';
+import { fetchRunsRequest } from 'actions/runs';
+import createTableField from 'utils/createTableField';
 
 import useExperimentStyles from './useExperimentStyles';
+
+const tableFields = () => [
+  createTableField(0, 'run_id', 'ID'),
+  createTableField(1, 'status', 'Status', value => (
+    <Chip label={value} color="primary" />
+  )),
+  createTableField(2, 'start_time', 'Start Time', value =>
+    value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
+  ),
+  createTableField(3, 'end_time', 'End Time', value =>
+    value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
+  )
+];
 
 const Experiment = ({
   match: {
@@ -36,18 +54,19 @@ const Experiment = ({
   isLoading,
   isError,
   currentSelectedProject,
-  push
+  runsData
 }) => {
   const dispatch = useDispatch();
   const classes = useExperimentStyles();
   const [open, setOpen] = useState(false);
 
   if (!currentSelectedProject) {
-    push('/');
+    dispatch(push('/'));
   }
 
   useEffect(() => {
     dispatch(fetchExperimentRequest(experimentId, currentSelectedProject));
+    dispatch(fetchRunsRequest(currentSelectedProject, experimentId));
   }, [dispatch, experimentId, currentSelectedProject]);
 
   useEffect(() => {
@@ -156,6 +175,10 @@ const Experiment = ({
           )}
         </div>
       </form>
+      <Typography component="h1" variant="h6" color="inherit" noWrap gutterBottom>
+        Runs
+      </Typography>
+      <Table tableFields={tableFields} data={runsData} innerLevel="info" />
     </Paper>
   );
 };
@@ -164,7 +187,8 @@ const mapStateToProps = state => ({
   isLoading: state.global.isLoading,
   isError: state.global.isError,
   data: state.experiments.current,
+  runsData: state.runs.runs,
   currentSelectedProject: state.global.current.project
 });
 
-export default withRouter(connect(mapStateToProps, { push })(Experiment));
+export default withRouter(connect(mapStateToProps)(Experiment));

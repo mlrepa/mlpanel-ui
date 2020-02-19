@@ -13,7 +13,8 @@ import {
   fetchModelsSuccess,
   fetchModelSuccess,
   deleteModelSuccess,
-  createModelSuccess
+  createModelSuccess,
+  fetchModelsRequest
 } from 'actions/models';
 
 import { setIsLoading, setIsError } from 'actions/global';
@@ -58,6 +59,7 @@ function* deleteModelSaga({ payload }) {
     yield put(push('/models'));
     toastr.success(`Model ${payload.id} deleted!`);
     yield put(setIsLoading(false));
+    yield put(fetchModelsRequest(payload.projectId));
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));

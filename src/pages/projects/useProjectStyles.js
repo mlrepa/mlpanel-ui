@@ -17,14 +17,22 @@ const useStyles = makeStyles(theme => ({
     color: '#fff'
   },
   chip: {
+    maxWidth: 180,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     margin: theme.spacing(2)
   },
   topBlock: {
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    marginBottom: theme.spacing(2)
   },
   button: {
     marginLeft: theme.spacing(3)
+  },
+  item: {
+    margin: theme.spacing(2)
   }
 }));
 

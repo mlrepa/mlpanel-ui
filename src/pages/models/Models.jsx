@@ -1,23 +1,50 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { format } from 'date-fns';
 import { push } from 'connected-react-router';
+import { Button, Grid, IconButton } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import Table from 'components/table';
 
-import { fetchModelsRequest } from 'actions/models';
+import { deleteModelRequest, fetchModelsRequest } from 'actions/models';
 
 import createTableField from 'utils/createTableField';
 import useModelsStyles from './useModelsStyles';
 
-const tableFields = [
+const tableFields = (deleteModel, dispatch) => [
   createTableField(0, 'id', 'ID'),
   createTableField(1, 'creation_timestamp', 'Created At', value =>
     value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
   ),
   createTableField(2, 'last_updated_timestamp', 'Updated At', value =>
     value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
-  )
+  ),
+  createTableField(3, 'id', 'Actions', (value, row) => (
+    <>
+      <IconButton
+        edge="end"
+        color="primary"
+        aria-label="delete model"
+        onClick={() => deleteModel(value)}
+      >
+        <DeleteIcon />
+      </IconButton>
+    </>
+  )),
+  createTableField(4, 'id', '', value => (
+    <Grid container spacing={2}>
+      <Grid item>
+        <Button
+          onClick={() => dispatch(push(`/models/${value}`))}
+          variant="contained"
+          color="primary"
+        >
+          Show
+        </Button>
+      </Grid>
+    </Grid>
+  ))
 ];
 
 const Models = ({
@@ -26,24 +53,27 @@ const Models = ({
   data,
   fetchRequest,
   push,
-  currentSelectedProject
+  currentSelectedProject,
+  deleteModel: deleteSelectedModel
 }) => {
+  const dispatch = useDispatch();
   const classes = useModelsStyles();
 
   if (!currentSelectedProject) {
     push('/');
   }
 
+  const deleteModel = id => deleteSelectedModel(id, currentSelectedProject);
+
   return (
     <div className={classes.root}>
       <Table
-        tableFields={tableFields}
+        tableFields={() => tableFields(deleteModel, dispatch)}
         isLoading={isLoading}
         isError={isError}
         data={data}
         fetchRequest={fetchRequest}
         additionalRequestProp={currentSelectedProject}
-        isRowClickable
       />
     </div>
   );
@@ -58,7 +88,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchRequest: projectId => dispatch(fetchModelsRequest(projectId)),
-  push: url => dispatch(push(url))
+  push: url => dispatch(push(url)),
+  deleteModel: (id, projectId) => dispatch(deleteModelRequest(id, projectId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Models);
