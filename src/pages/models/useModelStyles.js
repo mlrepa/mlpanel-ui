@@ -34,6 +34,9 @@ const useStyles = makeStyles(theme => ({
   },
   formItem: {
     margin: theme.spacing(4)
+  },
+  item: {
+    margin: theme.spacing(2)
   }
 }));
 

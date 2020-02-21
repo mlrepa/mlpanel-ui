@@ -9,7 +9,8 @@ import {
   TableContainer,
   TableCell,
   TableBody,
-  Table
+  Table,
+  Typography
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { withRouter } from 'react-router';
@@ -21,6 +22,9 @@ const useStyles = makeStyles(theme => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff'
+  },
+  title: {
+    fontWeight: 'bold'
   }
 }));
 
@@ -87,28 +91,29 @@ const DataTable = ({
         <TableHead>
           <TableRow>
             {tableFields().map(item => (
-              <TableCell key={item.id}>{item.title}</TableCell>
+              <TableCell key={item.id}>
+                <Typography className={classes.title}>{item.title}</Typography>
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {data && data.map(row => (
-            <TableRow
-              key={row.id || row.key}
-            >
-              {tableFields().map(field => {
-                const rowItem = innerLevel
-                  ? row[innerLevel][field.name]
-                  : row[field.name];
+          {data &&
+            data.map(row => (
+              <TableRow key={row.id || row.key}>
+                {tableFields().map(field => {
+                  const rowItem = innerLevel
+                    ? row[innerLevel][field.name]
+                    : row[field.name];
 
-                return (
-                  <TableCell key={field.id}>
-                    {field.format ? field.format(rowItem, row) : rowItem}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          ))}
+                  return (
+                    <TableCell key={field.id}>
+                      {field.format ? field.format(rowItem, row) : rowItem}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

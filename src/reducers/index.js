@@ -9,6 +9,7 @@ import runsReducer from './runs';
 import deploymentsReducer from './deployments';
 import modelsReducer from './models';
 import modelVersionsReducer from './modelVersions';
+import artifactsReducer from './artifacts';
 
 const createRootReducer = history =>
   combineReducers({
@@ -20,7 +21,8 @@ const createRootReducer = history =>
     runs: runsReducer,
     deployments: deploymentsReducer,
     models: modelsReducer,
-    modelVersions: modelVersionsReducer
+    modelVersions: modelVersionsReducer,
+    artifacts: artifactsReducer
   });
 
 export default createRootReducer;

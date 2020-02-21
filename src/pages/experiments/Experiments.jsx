@@ -19,10 +19,10 @@ const tableFields = (showCurrentProject) => [
     <Chip label={value} color="primary" />
   )),
   createTableField(3, 'creation_time', 'Created At', value =>
-    value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
+    value ? format(new Date(Number(value)), 'dd/MM/yyyy HH:mm') : ''
   ),
   createTableField(4, 'last_update_time', 'Updated At', value =>
-    value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
+    value ? format(new Date(Number(value)), 'dd/MM/yyyy HH:mm') : ''
   ),
   createTableField(5, 'id', '', (value, row) => (
     <Grid container spacing={2}>

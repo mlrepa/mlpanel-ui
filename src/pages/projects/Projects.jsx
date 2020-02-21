@@ -1,9 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { format } from 'date-fns';
-import { Button, Chip, Fab, IconButton, Grid } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 import { push } from 'connected-react-router';
+import {
+  Button,
+  Chip,
+  Fab,
+  IconButton,
+  Grid,
+  Tooltip
+} from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
 import ArchiveIcon from '@material-ui/icons/Archive';
@@ -51,50 +58,60 @@ const tableFields = (
 
   createTableField(5, 'id', 'Actions', (value, row) => (
     <>
-      <IconButton
-        disabled={row.status === 'running' || row.status === 'archived'}
-        edge="end"
-        color="primary"
-        aria-label="start project"
-        onClick={() => runProject(value)}
-      >
-        <PlayArrowIcon />
-      </IconButton>
-      <IconButton
-        disabled={row.status === 'terminated' || row.status === 'archived'}
-        edge="end"
-        color="primary"
-        aria-label="stop project"
-        onClick={() => stopProject(value)}
-      >
-        <StopIcon />
-      </IconButton>
-      <IconButton
-        disabled={row.status === 'archived'}
-        edge="end"
-        color="primary"
-        aria-label="archive project"
-        onClick={() => archiveProject(value)}
-      >
-        <ArchiveIcon />
-      </IconButton>
-      <IconButton
-        disabled={row.status !== 'archived'}
-        edge="end"
-        color="primary"
-        aria-label="restore project"
-        onClick={() => restoreProject(value)}
-      >
-        <SettingsBackupRestoreIcon />
-      </IconButton>
-      <IconButton
-        edge="end"
-        color="primary"
-        aria-label="delete project"
-        onClick={() => deleteProject(value)}
-      >
-        <DeleteIcon />
-      </IconButton>
+      <Tooltip title="Start" arrow placement="top">
+        <IconButton
+          disabled={row.status === 'running' || row.status === 'archived'}
+          edge="end"
+          color="primary"
+          aria-label="start project"
+          onClick={() => runProject(value)}
+        >
+          <PlayArrowIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Stop" arrow placement="top">
+        <IconButton
+          disabled={row.status === 'terminated' || row.status === 'archived'}
+          edge="end"
+          color="primary"
+          aria-label="stop project"
+          onClick={() => stopProject(value)}
+        >
+          <StopIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Archive" arrow placement="top">
+        <IconButton
+          disabled={row.status === 'archived'}
+          edge="end"
+          color="primary"
+          aria-label="archive project"
+          onClick={() => archiveProject(value)}
+        >
+          <ArchiveIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Restore" arrow placement="top">
+        <IconButton
+          disabled={row.status !== 'archived'}
+          edge="end"
+          color="primary"
+          aria-label="restore project"
+          onClick={() => restoreProject(value)}
+        >
+          <SettingsBackupRestoreIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Delete" arrow placement="top">
+        <IconButton
+          edge="end"
+          color="primary"
+          aria-label="delete project"
+          onClick={() => deleteProject(value)}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
     </>
   )),
   createTableField(6, 'id', '', (value, row) => (

@@ -25,8 +25,11 @@ const useStyles = makeStyles(theme => ({
   },
   topBlock: {
     display: 'flex',
-    justifyContent: 'flex-end',
-    marginBottom: theme.spacing(2)
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing(4)
+  },
+  innerBlock: {
+    display: 'flex'
   },
   button: {
     marginLeft: theme.spacing(3)

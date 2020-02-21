@@ -8,7 +8,9 @@ import {
   Chip,
   Button,
   Paper,
-  Typography
+  Typography,
+  Tooltip,
+  IconButton
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import Iframe from 'react-iframe';
@@ -16,6 +18,12 @@ import Alert from '@material-ui/lab/Alert';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { push } from 'connected-react-router';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import StopIcon from '@material-ui/icons/Stop';
+import ArchiveIcon from '@material-ui/icons/Archive';
+import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SaveIcon from '@material-ui/icons/Save';
 
 import {
   fetchProjectRequest,
@@ -27,6 +35,7 @@ import {
   archiveProjectRequest
 } from 'actions/projects';
 import { setCurrentProject } from 'actions/global';
+import { fetchExperimentsRequest } from 'actions/experiments';
 import { projectsStatuses } from 'constants/enums';
 
 import useProjectStyles from './useProjectStyles';
@@ -38,7 +47,8 @@ const Project = ({
   data: { id, name, description, status, mlflowUri, createdBy, createdAt },
   data,
   isLoading,
-  isError
+  isError,
+  experimentsData
 }) => {
   const dispatch = useDispatch();
   const classes = useProjectStyles();
@@ -46,6 +56,7 @@ const Project = ({
 
   useEffect(() => {
     dispatch(fetchProjectRequest(projectId));
+    dispatch(fetchExperimentsRequest(projectId));
   }, [dispatch, projectId]);
 
   useEffect(() => {
@@ -95,89 +106,103 @@ const Project = ({
         {props => (
           <form className={classes.root} onSubmit={props.handleSubmit}>
             <div className={classes.topBlock}>
-              <Button
-                className={classes.button}
-                type="submit"
-                variant="contained"
-                color="primary"
-              >
-                Save
-              </Button>
-              <Button
-                className={classes.button}
-                variant="contained"
-                color="secondary"
-                onClick={() => dispatch(deleteProjectRequest(projectId))}
-              >
-                Delete
-              </Button>
-              <Button
-                className={classes.button}
-                variant="contained"
-                color="primary"
-                disabled={status === 'running' || status === 'archived'}
-                onClick={() => dispatch(runProjectRequest(projectId))}
-              >
-                Run
-              </Button>
-              <Button
-                className={classes.button}
-                variant="contained"
-                color="secondary"
-                disabled={status === 'terminated' || status === 'archived'}
-                onClick={() => dispatch(terminateProjectRequest(projectId))}
-              >
-                Terminate
-              </Button>
-              <Button
-                className={classes.button}
-                variant="contained"
-                color="primary"
-                disabled={status === 'running' || status === 'terminated'}
-                onClick={() => dispatch(restoreProjectRequest(projectId))}
-              >
-                Restore
-              </Button>
-              <Button
-                className={classes.button}
-                variant="contained"
-                color="default"
-                disabled={status === 'archived'}
-                onClick={() => dispatch(archiveProjectRequest(projectId))}
-              >
-                Archive
-              </Button>
-            </div>
-            <div className={classes.topBlock}>
-              <Button
-                className={classes.button}
-                disabled={status !== 'running'}
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => setProject(id, 'experiments')}
-              >
-                Experiments
-              </Button>
-              <Button
-                className={classes.button}
-                disabled={status !== 'running'}
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => setProject(id, 'models')}
-              >
-                Models
-              </Button>
-              <Button
-                className={classes.button}
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => dispatch(push('/deployments'))}
-              >
-                Deployments
-              </Button>
+              <div className={classes.innerBlock}>
+                <Tooltip title="Save" arrow placement="top">
+                  <IconButton
+                    edge="end"
+                    color="primary"
+                    aria-label="save project"
+                    type="submit"
+                  >
+                    <SaveIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Start" arrow placement="top">
+                  <IconButton
+                    disabled={status === 'running' || status === 'archived'}
+                    edge="end"
+                    color="primary"
+                    aria-label="start project"
+                    onClick={() => dispatch(runProjectRequest(id))}
+                  >
+                    <PlayArrowIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Stop" arrow placement="top">
+                  <IconButton
+                    disabled={status === 'terminated' || status === 'archived'}
+                    edge="end"
+                    color="primary"
+                    aria-label="stop project"
+                    onClick={() => dispatch(terminateProjectRequest(id))}
+                  >
+                    <StopIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Archive" arrow placement="top">
+                  <IconButton
+                    disabled={status === 'archived'}
+                    edge="end"
+                    color="primary"
+                    aria-label="archive project"
+                    onClick={() => dispatch(archiveProjectRequest(id))}
+                  >
+                    <ArchiveIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Restore" arrow placement="top">
+                  <IconButton
+                    disabled={status !== 'archived'}
+                    edge="end"
+                    color="primary"
+                    aria-label="restore project"
+                    onClick={() => dispatch(restoreProjectRequest(id))}
+                  >
+                    <SettingsBackupRestoreIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete" arrow placement="top">
+                  <IconButton
+                    edge="end"
+                    color="primary"
+                    aria-label="delete project"
+                    onClick={() => dispatch(deleteProjectRequest(id))}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
+              <div className={classes.innerBlock}>
+                <Button
+                  className={classes.button}
+                  disabled={status !== 'running'}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setProject(id, 'experiments')}
+                >
+                  Experiments
+                </Button>
+                <Button
+                  className={classes.button}
+                  disabled={status !== 'running'}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setProject(id, 'models')}
+                >
+                  Models
+                </Button>
+                <Button
+                  className={classes.button}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => dispatch(push('/deployments'))}
+                >
+                  Deployments
+                </Button>
+              </div>
             </div>
             <div className={classes.chip}>
               <Typography variant="h6">STATUS: </Typography>
@@ -190,6 +215,11 @@ const Project = ({
             </div>
             <div className={classes.item}>
               <Typography color="textSecondary">ID: {id}</Typography>
+            </div>
+            <div className={classes.item}>
+              <Typography color="textSecondary">
+                Experiments Amount: {experimentsData.length}
+              </Typography>
             </div>
             <div className={classes.item}>
               <Typography color="textSecondary">
@@ -246,7 +276,8 @@ const Project = ({
 const mapStateToProps = state => ({
   isLoading: state.global.isLoading,
   isError: state.global.isError,
-  data: state.projects.current
+  data: state.projects.current,
+  experimentsData: state.experiments.experiments
 });
 
 export default withRouter(connect(mapStateToProps)(Project));

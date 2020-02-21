@@ -6,6 +6,7 @@ import runsSagas from './runs';
 import deploymentsSagas from './deployments';
 import modelsSagas from './models';
 import modelVersionsSagas from './modelVersions';
+import artifactsSagas from './artifacts';
 
 export default function* rootSaga() {
   yield all([
@@ -14,6 +15,7 @@ export default function* rootSaga() {
     ...runsSagas,
     ...deploymentsSagas,
     ...modelsSagas,
-    ...modelVersionsSagas
+    ...modelVersionsSagas,
+    ...artifactsSagas
   ]);
 }

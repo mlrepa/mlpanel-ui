@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { format } from 'date-fns';
 import { push } from 'connected-react-router';
-import { Button, Grid, IconButton } from '@material-ui/core';
+import { Button, Grid, IconButton, Tooltip } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import Table from 'components/table';
@@ -15,21 +15,23 @@ import useModelsStyles from './useModelsStyles';
 const tableFields = (deleteModel, dispatch) => [
   createTableField(0, 'id', 'ID'),
   createTableField(1, 'creation_timestamp', 'Created At', value =>
-    value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
+    value ? format(new Date(Number(value)), 'dd/MM/yyyy HH:mm') : ''
   ),
   createTableField(2, 'last_updated_timestamp', 'Updated At', value =>
-    value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
+    value ? format(new Date(Number(value)), 'dd/MM/yyyy HH:mm') : ''
   ),
   createTableField(3, 'id', 'Actions', (value, row) => (
     <>
-      <IconButton
-        edge="end"
-        color="primary"
-        aria-label="delete model"
-        onClick={() => deleteModel(value)}
-      >
-        <DeleteIcon />
-      </IconButton>
+      <Tooltip title="Delete" arrow placement="top">
+        <IconButton
+          edge="end"
+          color="primary"
+          aria-label="delete model"
+          onClick={() => deleteModel(value)}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
     </>
   )),
   createTableField(4, 'id', '', value => (
