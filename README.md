@@ -1,4 +1,4 @@
-# `TRIPFER`
+# `MLPanel UI`
 
 ## Available Scripts
 

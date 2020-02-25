@@ -18,7 +18,8 @@ import {
   deleteDeploymentSuccess,
   createDeploymentSuccess,
   stopDeploymentSuccess,
-  fetchDeploymentRequest
+  fetchDeploymentRequest,
+  fetchDeploymentsRequest
 } from 'actions/deployments';
 
 import { setIsLoading, setIsError } from 'actions/global';
@@ -69,6 +70,7 @@ function* deleteDeploymentSaga({ payload }) {
     yield put(push('/deployments'));
     toastr.success(`Deployment ${payload} deleted!`);
     yield put(setIsLoading(false));
+    yield put(fetchDeploymentsRequest());
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));
@@ -85,6 +87,7 @@ function* runDeploymentSaga({ payload }) {
     yield put(fetchDeploymentRequest(payload));
     toastr.success(`Deployment ${payload} ran!`);
     yield put(setIsLoading(false));
+    yield put(fetchDeploymentsRequest());
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));
@@ -101,6 +104,7 @@ function* stopDeploymentSaga({ payload }) {
     yield put(fetchDeploymentRequest(payload));
     toastr.success(`Deployment ${payload} stopped!`);
     yield put(setIsLoading(false));
+    yield put(fetchDeploymentsRequest());
   } catch (e) {
     toastr.error(e.response.data.message || 'Error!');
     yield put(setIsError(true));

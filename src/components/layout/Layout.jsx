@@ -25,6 +25,9 @@ import { useHistory, useLocation, withRouter } from 'react-router';
 import { push } from 'connected-react-router';
 import { connect, useDispatch } from 'react-redux';
 
+import CustomizedSelect from '../customized-select';
+
+import { fetchArtifactsRequest } from 'actions/artifacts';
 import { setCurrentExperiment, setCurrentProject } from 'actions/global';
 import { fetchProjectRequest, fetchProjectsRequest } from 'actions/projects';
 import {
@@ -35,15 +38,12 @@ import {
   fetchDeploymentRequest,
   fetchDeploymentsRequest
 } from 'actions/deployments';
-
+import { fetchRunRequest, fetchRunsRequest } from 'actions/runs';
+import { fetchModelRequest, fetchModelsRequest } from 'actions/models';
 import urlPaths from 'constants/urlPaths';
 import routes from 'routes';
-import CustomizedSelect from '../customized-select';
 
 import useLayoutStyles from './useLayoutStyles';
-import { fetchRunRequest, fetchRunsRequest } from '../../actions/runs';
-import { fetchModelRequest, fetchModelsRequest } from '../../actions/models';
-import { fetchModel } from '../../api/models';
 
 const Layout = ({
   children,
@@ -52,7 +52,6 @@ const Layout = ({
   currentSelectedProject,
   currentSelectedExperiment,
   projectsData,
-  experimentsData,
   currentProject,
   currentExperiment,
   currentDeployment,
@@ -70,7 +69,7 @@ const Layout = ({
     if (projectsData.length === 0 && location.pathname !== urlPaths.ROOT_PATH) {
       dispatch(fetchProjectsRequest());
     }
-  }, [dispatch, match.path, projectsData.length]);
+  }, [dispatch, match.path, projectsData.length, location.pathname]);
 
   useEffect(() => {
     const currentMenuRoute = routes.find(
@@ -104,17 +103,15 @@ const Layout = ({
         dispatch(
           fetchExperimentRequest(currentExperiment.id, currentSelectedProject)
         );
+        dispatch(
+          fetchRunsRequest(currentSelectedProject, currentExperiment.id)
+        );
         break;
       case urlPaths.DEPLOYMENTS_PATH:
         dispatch(fetchDeploymentsRequest());
         break;
       case `${urlPaths.DEPLOYMENTS_PATH}/${currentDeployment.id}`:
         dispatch(fetchDeploymentRequest(currentDeployment.id));
-        break;
-      case urlPaths.RUNS_PATH:
-        dispatch(
-          fetchRunsRequest(currentSelectedProject, currentSelectedExperiment)
-        );
         break;
       case `${urlPaths.RUNS_PATH}/${currentRun.id}`:
         dispatch(
@@ -124,6 +121,8 @@ const Layout = ({
             currentSelectedExperiment
           )
         );
+        dispatch(fetchModelsRequest(currentSelectedProject));
+        dispatch(fetchArtifactsRequest(currentSelectedProject, currentRun.id));
         break;
       case urlPaths.MODELS_PATH:
         dispatch(fetchModelsRequest(currentSelectedProject));
@@ -139,7 +138,6 @@ const Layout = ({
   const handleGoBack = () => history.goBack();
 
   const handleListItemClick = (event, index) => {
-    handleDrawerClose();
     push(routes.find(item => item.id === index).path);
   };
 
@@ -153,10 +151,6 @@ const Layout = ({
       dispatch(setCurrentExperiment(''));
       dispatch(fetchExperimentsRequest(id));
     }
-  };
-
-  const handleExperimentChange = id => {
-    dispatch(setCurrentExperiment(id));
   };
 
   return (
@@ -213,23 +207,6 @@ const Layout = ({
                 key={project.id}
                 value={project.id}
               >
-                {project.name}
-              </MenuItem>
-            ))}
-          </Select>
-          <Typography component="h1" variant="h6" color="inherit" noWrap>
-            Current Experiment:
-          </Typography>
-          <Select
-            displayEmpty
-            disabled={!currentSelectedProject}
-            value={currentSelectedExperiment}
-            onChange={event => handleExperimentChange(event.target.value)}
-            input={<CustomizedSelect />}
-          >
-            <MenuItem value="">None</MenuItem>
-            {experimentsData.map(project => (
-              <MenuItem key={project.id} value={project.id}>
                 {project.name}
               </MenuItem>
             ))}
@@ -301,7 +278,6 @@ const mapStateToProps = state => ({
   currentSelectedProject: state.global.current.project,
   currentSelectedExperiment: state.global.current.experiment,
   projectsData: state.projects.projects,
-  experimentsData: state.experiments.experiments,
   currentProject: state.projects.current,
   currentExperiment: state.experiments.current,
   currentDeployment: state.deployments.current,

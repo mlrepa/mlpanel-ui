@@ -9,20 +9,31 @@ import {
   Paper,
   Select,
   MenuItem,
-  Modal
+  Modal,
+  Typography,
+  Tooltip,
+  IconButton
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import Alert from '@material-ui/lab/Alert';
 import { push } from 'connected-react-router';
 import { Formik } from 'formik';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import { fetchModelRequest, deleteModelRequest } from 'actions/models';
 import { createDeploymentRequest } from 'actions/deployments';
 import { fetchModelVersionsRequest } from 'actions/modelVersions';
+import createTableField from 'utils/createTableField';
 
 import CustomizedSelect from 'components/customized-select';
+import DataTable from 'components/table/DataTable';
 
 import useModelStyles from './useModelStyles';
+
+const modelVersionsTableFields = () => [
+  createTableField(0, 'id', 'ID'),
+  createTableField(1, 'version', 'Version')
+];
 
 const Model = ({
   match: {
@@ -162,16 +173,18 @@ const Model = ({
       </Modal>
       <form className={classes.root}>
         <div className={classes.topBlock}>
-          <Button
-            className={classes.button}
-            variant="contained"
-            color="secondary"
-            onClick={() =>
-              dispatch(deleteModelRequest(modelId, currentSelectedProject))
-            }
-          >
-            Delete
-          </Button>
+          <Tooltip title="Delete" arrow placement="top">
+            <IconButton
+              edge="end"
+              color="primary"
+              aria-label="delete run"
+              onClick={() =>
+                dispatch(deleteModelRequest(modelId, currentSelectedProject))
+              }
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
           <Button
             className={classes.button}
             variant="contained"
@@ -181,8 +194,8 @@ const Model = ({
             Deploy
           </Button>
         </div>
-        <div>
-          <TextField disabled label="Name" variant="outlined" value={id} />
+        <div className={classes.item}>
+          <Typography color="textSecondary">Name: {id}</Typography>
         </div>
         <div>
           {creation_timestamp ? (
@@ -220,6 +233,16 @@ const Model = ({
             />
           )}
         </div>
+        <Typography
+          component="h1"
+          variant="h6"
+          color="inherit"
+          noWrap
+          gutterBottom
+        >
+          Model Versions
+        </Typography>
+        <DataTable tableFields={modelVersionsTableFields} data={modelVersionsData} />
       </form>
     </Paper>
   );

@@ -23,6 +23,10 @@ const useStyles = makeStyles(theme => ({
     color: '#fff'
   },
   chip: {
+    maxWidth: 250,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     margin: theme.spacing(2)
   },
   topBlock: {
@@ -31,6 +35,9 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     marginLeft: theme.spacing(3)
+  },
+  item: {
+    margin: theme.spacing(2)
   }
 }));
 

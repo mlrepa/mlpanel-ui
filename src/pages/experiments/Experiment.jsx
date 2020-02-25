@@ -7,18 +7,55 @@ import {
   CircularProgress,
   Chip,
   Button,
-  Paper
+  Paper,
+  Typography,
+  Grid,
+  Tooltip,
+  IconButton
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import Alert from '@material-ui/lab/Alert';
 import { push } from 'connected-react-router';
+import { format } from 'date-fns';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import Table from 'components/table/DataTable';
 
 import {
   fetchExperimentRequest,
   deleteExperimentRequest
 } from 'actions/experiments';
+import { fetchRunsRequest } from 'actions/runs';
+import createTableField from 'utils/createTableField';
+import { setCurrentExperiment } from 'actions/global';
 
 import useExperimentStyles from './useExperimentStyles';
+
+const tableFields = dispatch => [
+  createTableField(0, 'run_id', 'ID'),
+  createTableField(1, 'status', 'Status', value => (
+    <Chip label={value} color="primary" />
+  )),
+  createTableField(2, 'start_time', 'Start Time', value =>
+    value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
+  ),
+  createTableField(3, 'end_time', 'End Time', value =>
+    value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
+  ),
+  createTableField(4, 'run_id', '', value => (
+    <Grid container spacing={2}>
+      <Grid item>
+        <Button
+          onClick={() => dispatch(push(`/runs/${value}`))}
+          variant="contained"
+          color="primary"
+        >
+          Show
+        </Button>
+      </Grid>
+    </Grid>
+  ))
+];
 
 const Experiment = ({
   match: {
@@ -36,18 +73,20 @@ const Experiment = ({
   isLoading,
   isError,
   currentSelectedProject,
-  push
+  runsData
 }) => {
   const dispatch = useDispatch();
   const classes = useExperimentStyles();
   const [open, setOpen] = useState(false);
 
   if (!currentSelectedProject) {
-    push('/');
+    dispatch(push('/'));
   }
 
   useEffect(() => {
     dispatch(fetchExperimentRequest(experimentId, currentSelectedProject));
+    dispatch(fetchRunsRequest(currentSelectedProject, experimentId));
+    dispatch(setCurrentExperiment(experimentId));
   }, [dispatch, experimentId, currentSelectedProject]);
 
   useEffect(() => {
@@ -82,42 +121,37 @@ const Experiment = ({
     <Paper className={classes.paper}>
       <form className={classes.root}>
         <div className={classes.topBlock}>
-          <Button
-            className={classes.button}
-            variant="contained"
-            color="secondary"
-            onClick={() =>
-              dispatch(
-                deleteExperimentRequest(experimentId, currentSelectedProject)
-              )
-            }
-          >
-            Delete
-          </Button>
+          <Tooltip title="Delete" arrow placement="top">
+            <IconButton
+              edge="end"
+              color="primary"
+              aria-label="delete experiment"
+              onClick={() =>
+                dispatch(
+                  deleteExperimentRequest(experimentId, currentSelectedProject)
+                )
+              }
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </div>
         <div className={classes.chip}>
+          <Typography variant="h6">STATUS: </Typography>
           <Chip label={lifecycle_stage} color="primary" />
         </div>
-        <div>
-          <TextField disabled label="Name" variant="outlined" value={name} />
+        <div className={classes.item}>
+          <Typography color="textSecondary">Name: {name}</Typography>
         </div>
-        <div>
-          <TextField
-            label="Description"
-            variant="outlined"
-            disabled
-            multiline
-            rows="4"
-            value={description}
-          />
+        <div className={classes.item}>
+          <Typography color="textSecondary">
+            Description: {description}
+          </Typography>
         </div>
-        <div>
-          <TextField
-            label="Artifact Location"
-            variant="outlined"
-            disabled
-            value={artifact_location}
-          />
+        <div className={classes.item}>
+          <Typography color="textSecondary">
+            Artifact Location: {artifact_location}
+          </Typography>
         </div>
         <div>
           {creation_time ? (
@@ -156,6 +190,20 @@ const Experiment = ({
           )}
         </div>
       </form>
+      <Typography
+        component="h1"
+        variant="h6"
+        color="inherit"
+        noWrap
+        gutterBottom
+      >
+        Runs
+      </Typography>
+      <Table
+        tableFields={() => tableFields(dispatch)}
+        data={runsData}
+        innerLevel="info"
+      />
     </Paper>
   );
 };
@@ -164,7 +212,8 @@ const mapStateToProps = state => ({
   isLoading: state.global.isLoading,
   isError: state.global.isError,
   data: state.experiments.current,
+  runsData: state.runs.runs,
   currentSelectedProject: state.global.current.project
 });
 
-export default withRouter(connect(mapStateToProps, { push })(Experiment));
+export default withRouter(connect(mapStateToProps)(Experiment));
