@@ -56,7 +56,7 @@ const tableFields = (
   ),
   createTableField(4, 'createdBy', 'Created By'),
 
-  createTableField(5, 'id', 'Actions', (value, row) => (
+  createTableField(5, '', 'Actions', (value, row) => (
     <>
       <Tooltip title="Start" arrow placement="top">
         <IconButton
@@ -64,7 +64,7 @@ const tableFields = (
           edge="end"
           color="primary"
           aria-label="start project"
-          onClick={() => runProject(value)}
+          onClick={() => runProject(row.id)}
         >
           <PlayArrowIcon />
         </IconButton>
@@ -75,7 +75,7 @@ const tableFields = (
           edge="end"
           color="primary"
           aria-label="stop project"
-          onClick={() => stopProject(value)}
+          onClick={() => stopProject(row.id)}
         >
           <StopIcon />
         </IconButton>
@@ -86,7 +86,7 @@ const tableFields = (
           edge="end"
           color="primary"
           aria-label="archive project"
-          onClick={() => archiveProject(value)}
+          onClick={() => archiveProject(row.id)}
         >
           <ArchiveIcon />
         </IconButton>
@@ -97,7 +97,7 @@ const tableFields = (
           edge="end"
           color="primary"
           aria-label="restore project"
-          onClick={() => restoreProject(value)}
+          onClick={() => restoreProject(row.id)}
         >
           <SettingsBackupRestoreIcon />
         </IconButton>
@@ -107,19 +107,19 @@ const tableFields = (
           edge="end"
           color="primary"
           aria-label="delete project"
-          onClick={() => deleteProject(value)}
+          onClick={() => deleteProject(row.id)}
         >
           <DeleteIcon />
         </IconButton>
       </Tooltip>
     </>
   )),
-  createTableField(6, 'id', '', (value, row) => (
+  createTableField(6, '', '', (value, row) => (
     <Grid container spacing={2}>
       <Grid item>
         <Button
           disabled={row.status !== 'running'}
-          onClick={() => setCurrentProject(value)}
+          onClick={() => setCurrentProject(row.id)}
           variant="contained"
           color="primary"
         >
@@ -128,7 +128,7 @@ const tableFields = (
       </Grid>
       <Grid item>
         <Button
-          onClick={() => showCurrentProject(value)}
+          onClick={() => showCurrentProject(row.id)}
           variant="contained"
           color="primary"
         >

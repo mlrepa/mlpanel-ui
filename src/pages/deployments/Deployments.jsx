@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { format } from 'date-fns';
-import { Button, Chip, Grid, IconButton } from "@material-ui/core";
+import { Button, Chip, Grid, IconButton } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -18,7 +18,7 @@ import Table from 'components/table';
 import createTableField from 'utils/createTableField';
 
 import useDeploymentsStyles from './useDeploymentsStyles';
-import { push } from "connected-react-router";
+import { push } from 'connected-react-router';
 
 const tableFields = dispatch => [
   createTableField(0, 'model_id', 'Model Id'),
@@ -32,14 +32,14 @@ const tableFields = dispatch => [
   ),
   createTableField(5, 'host', 'Host'),
   createTableField(6, 'port', 'Port'),
-  createTableField(7, 'id', 'Actions', (value, row) => (
+  createTableField(7, '', 'Actions', (value, row) => (
     <>
       <IconButton
         disabled={row.status === 'running'}
         edge="end"
         color="primary"
         aria-label="start project"
-        onClick={() => dispatch(runDeploymentRequest(value))}
+        onClick={() => dispatch(runDeploymentRequest(row.id))}
       >
         <PlayArrowIcon />
       </IconButton>
@@ -48,7 +48,7 @@ const tableFields = dispatch => [
         edge="end"
         color="primary"
         aria-label="stop project"
-        onClick={() => dispatch(stopDeploymentRequest(value))}
+        onClick={() => dispatch(stopDeploymentRequest(row.id))}
       >
         <StopIcon />
       </IconButton>
@@ -57,17 +57,17 @@ const tableFields = dispatch => [
         edge="end"
         color="primary"
         aria-label="stop project"
-        onClick={() => dispatch(deleteDeploymentRequest(value))}
+        onClick={() => dispatch(deleteDeploymentRequest(row.id))}
       >
         <DeleteIcon />
       </IconButton>
     </>
   )),
-  createTableField(8, 'id', '', value => (
+  createTableField(8, '', '', (value, row) => (
     <Grid container spacing={2}>
       <Grid item>
         <Button
-          onClick={() => dispatch(push(`/deployments/${value}`))}
+          onClick={() => dispatch(push(`/deployments/${row.id}`))}
           variant="contained"
           color="primary"
         >

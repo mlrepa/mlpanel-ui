@@ -56,7 +56,9 @@ const Project = ({
 
   useEffect(() => {
     dispatch(fetchProjectRequest(projectId));
-    dispatch(fetchExperimentsRequest(projectId));
+    if (status === 'running') {
+      dispatch(fetchExperimentsRequest(projectId));
+    }
   }, [dispatch, projectId]);
 
   useEffect(() => {
@@ -218,7 +220,8 @@ const Project = ({
             </div>
             <div className={classes.item}>
               <Typography color="textSecondary">
-                Experiments Amount: {experimentsData.length}
+                Experiments Amount:{' '}
+                {status !== 'running' ? 'Run Project!' : experimentsData.length}
               </Typography>
             </div>
             <div className={classes.item}>
@@ -228,7 +231,7 @@ const Project = ({
             </div>
             <div className={classes.item}>
               <Typography color="textSecondary">
-                Mlflow Tracking Server: {mlflowUri}
+                Mlflow Tracking Server: <a href={mlflowUri}>{mlflowUri}</a>
               </Typography>
             </div>
             <div>

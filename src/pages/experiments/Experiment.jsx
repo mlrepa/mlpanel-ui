@@ -42,11 +42,11 @@ const tableFields = dispatch => [
   createTableField(3, 'end_time', 'End Time', value =>
     value ? format(new Date(Number(value)), 'dd/MM/yyyy') : ''
   ),
-  createTableField(4, 'run_id', '', value => (
+  createTableField(4, '', '', (value, row) => (
     <Grid container spacing={2}>
       <Grid item>
         <Button
-          onClick={() => dispatch(push(`/runs/${value}`))}
+          onClick={() => dispatch(push(`/runs/${row.run_id}`))}
           variant="contained"
           color="primary"
         >
@@ -150,7 +150,8 @@ const Experiment = ({
         </div>
         <div className={classes.item}>
           <Typography color="textSecondary">
-            Artifact Location: {artifact_location}
+            Artifact Location:{' '}
+            <a href={artifact_location}>{artifact_location}</a>
           </Typography>
         </div>
         <div>

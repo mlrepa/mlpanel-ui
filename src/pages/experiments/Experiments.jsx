@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { format } from 'date-fns';
-import { Button, Chip, Fab, Grid } from "@material-ui/core";
+import { Button, Chip, Fab, Grid } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { push } from 'connected-react-router';
 
@@ -12,7 +12,7 @@ import Table from 'components/table';
 import createTableField from 'utils/createTableField';
 import useExperimentsStyles from './useExperimentsStyles';
 
-const tableFields = (showCurrentProject) => [
+const tableFields = showCurrentProject => [
   createTableField(0, 'name', 'Name'),
   createTableField(1, 'artifact_location', 'Artifact Location'),
   createTableField(2, 'lifecycle_stage', 'Lifecycle Stage', value => (
@@ -24,11 +24,11 @@ const tableFields = (showCurrentProject) => [
   createTableField(4, 'last_update_time', 'Updated At', value =>
     value ? format(new Date(Number(value)), 'dd/MM/yyyy HH:mm') : ''
   ),
-  createTableField(5, 'id', '', (value, row) => (
+  createTableField(5, '', '', (value, row) => (
     <Grid container spacing={2}>
       <Grid item>
         <Button
-          onClick={() => showCurrentProject(value)}
+          onClick={() => showCurrentProject(row.id)}
           variant="contained"
           color="primary"
         >

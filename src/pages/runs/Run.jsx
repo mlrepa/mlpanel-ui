@@ -246,7 +246,7 @@ const Run = ({
         </div>
         <div className={classes.item}>
           <Typography color="textSecondary">
-            Artifact Uri: {artifact_uri}
+            Artifact Uri: <a href={artifact_uri}>{artifact_uri}</a>
           </Typography>
         </div>
         <div>
