@@ -10,10 +10,13 @@ import {
   TableCell,
   TableBody,
   Table,
-  Typography
+  Typography,
+  TableSortLabel
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { withRouter } from 'react-router';
+
+import { getComparator, stableSort } from 'utils/sorting';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -41,6 +44,8 @@ const DataTable = ({
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
 
   useEffect(() => {
     if (additionalRequestProp && secondAdditionalRequestProp && twoProps) {
@@ -85,21 +90,50 @@ const DataTable = ({
     );
   }
 
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const createSortHandler = property => event => {
+    handleRequestSort(event, property);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
             {tableFields().map(item => (
-              <TableCell key={item.id}>
-                <Typography className={classes.title}>{item.title}</Typography>
+              <TableCell
+                key={item.id}
+                sortDirection={orderBy === item.name ? order : false}
+              >
+                {item.name ? (
+                  <TableSortLabel
+                    disabled={!item.name}
+                    hideSortIcon={!item.name}
+                    active={orderBy === item.name}
+                    direction={orderBy === item.name ? order : 'asc'}
+                    onClick={createSortHandler(item.name)}
+                  >
+                    <Typography className={classes.title}>
+                      {item.title}
+                    </Typography>
+                  </TableSortLabel>
+                ) : (
+                  <Typography className={classes.title}>
+                    {item.title}
+                  </Typography>
+                )}
               </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
           {data &&
-            data.map(row => (
+            stableSort(data, getComparator(order, orderBy)).map(row => (
               <TableRow key={row.id || row.key}>
                 {tableFields().map(field => {
                   const rowItem = innerLevel

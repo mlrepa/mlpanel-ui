@@ -20,25 +20,25 @@ const tableFields = (deleteModel, dispatch) => [
   createTableField(2, 'last_updated_timestamp', 'Updated At', value =>
     value ? format(new Date(Number(value)), 'dd/MM/yyyy HH:mm') : ''
   ),
-  createTableField(3, 'id', 'Actions', (value, row) => (
+  createTableField(3, '', 'Actions', (value, row) => (
     <>
       <Tooltip title="Delete" arrow placement="top">
         <IconButton
           edge="end"
           color="primary"
           aria-label="delete model"
-          onClick={() => deleteModel(value)}
+          onClick={() => deleteModel(row.id)}
         >
           <DeleteIcon />
         </IconButton>
       </Tooltip>
     </>
   )),
-  createTableField(4, 'id', '', value => (
+  createTableField(4, '', '', (value, row) => (
     <Grid container spacing={2}>
       <Grid item>
         <Button
-          onClick={() => dispatch(push(`/models/${value}`))}
+          onClick={() => dispatch(push(`/models/${row.id}`))}
           variant="contained"
           color="primary"
         >
