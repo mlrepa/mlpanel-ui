@@ -46,7 +46,7 @@ const tableFields = dispatch => [
     <Grid container spacing={2}>
       <Grid item>
         <Button
-          onClick={() => dispatch(push(`/runs/${row.run_id}`))}
+          onClick={() => dispatch(push(`/runs/${row.id}`))}
           variant="contained"
           color="primary"
         >
